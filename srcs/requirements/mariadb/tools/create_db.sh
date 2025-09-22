@@ -53,11 +53,3 @@ kill "$pid"
 # mysqladmin shutdown -u root -p"${MARIADB_ROOT_PASSWORD}"
 mysqld --bind-address=0.0.0.0 --user=mysql
 exec mysqld_safe --user=mysql --datadir=/var/lib/mysql
-
-# mysql --bind-address=0.0.0.0 --user=wpuser -u root -p"${MARIADB_ROOT_PASSWORD}"
-
-# Start MariaDB in the foreground as the `mysql` user
-# echo "Starting MariaDB..."
-# exec su mysql -s /bin/bash -c "mysqld"
-# exec mysqld_safe
-

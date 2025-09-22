@@ -23,12 +23,6 @@ until mysql -h "${DB_HOST}" -u "${MARIADB_USER}" -p"${DB_PASSWORD}" -e "SELECT 1
 done
 echo "MariaDB is ready!"
 
-# Use 'find' for a more reliable check for an empty directory
-# if [ -z "$(find /var/www/html -maxdepth 0 -type d -empty)" ]; then
-#     echo "Copying WordPress files..."
-#     cp -r /var/www/wordpress/. /var/www/html/
-# fi
-
 # Configure and install WordPress only if wp-config.php doesn't exist
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Creating wp-config.php..."
