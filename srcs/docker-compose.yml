@@ -1,0 +1,79 @@
+
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./requirements/mariadb/tools/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+    secrets:
+      - db_root_password
+      - db_user_password
+    ports:
+      - "3306:3306"
+    networks:
+      - inception_network
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    restart: always
+    networks:
+      - inception_network
+    volumes:
+      - volwordpress:/var/www/html
+    ports:
+      - 9000:9000
+    env_file:
+      - .env
+    secrets:
+      - db_user_password
+      - WP_ADMIN_PASSWORD
+      - WP_USER_PASSWORD
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    volumes:
+      - volwordpress:/var/www/html
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - inception_network
+    restart: always
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_user_password:
+    file: ../secrets/db_user_password.txt
+  WP_ADMIN_PASSWORD:
+    file: ../secrets/WP_ADMIN_PASSWORD
+  WP_USER_PASSWORD:
+    file: ../secrets/WP_USER_PASSWORD
+
+networks:
+  inception_network:
+    driver: bridge
+    name: inception_network
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/scharuka/data/mariadb
+      o: bind
+  volwordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/scharuka/data/wordpress
+      o: bind
