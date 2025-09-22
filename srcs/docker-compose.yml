@@ -3,6 +3,7 @@ services:
   mariadb:
     build: ./requirements/mariadb
     container_name: mariadb
+    image: mariadb
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -21,6 +22,7 @@ services:
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
+    image: wordpress
     depends_on:
       - mariadb
     restart: always
@@ -39,6 +41,7 @@ services:
   nginx:
     build: ./requirements/nginx
     container_name: nginx
+    image: nginx
     volumes:
       - volwordpress:/var/www/html
     ports:
